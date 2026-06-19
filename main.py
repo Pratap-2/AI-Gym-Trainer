@@ -2,8 +2,8 @@ import streamlit as st
 from services.auth.login_wall import render_login_wall
 from services.state.session_defaults import initial_session_defaults
 from services.config.workout_config import EXERCISE_OPTIONS
-
-
+from services.ui.style_loader import inject_local_font, load_css 
+import os
 
 def main():
 
@@ -14,6 +14,11 @@ def main():
     )
 
     initial_session_defaults()
+
+    load_css(os.path.join(os.getcwd(), "static", "style.css"))
+
+    inject_local_font(os.path.join(os.getcwd(), "static", "AdobeClean.otf"), "AdobeClean")
+
 
     if not render_login_wall():
         return
