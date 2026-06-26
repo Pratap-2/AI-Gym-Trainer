@@ -193,65 +193,42 @@ def main():
         """,
         unsafe_allow_html=True,
     )
-    col1, col2 = st.columns([2, 1])
-    with col1:
-        st.markdown(
-            """
-            <div style="background: #11161f; padding: 24px; border-radius: 24px;
-                        border: 1px solid rgba(255,255,255,0.06);">
-              <p style="font-size:0.95rem; color:#cfd6e8; margin:0 0 16px; line-height:1.7;">
-                Meet your AI coach — a friendly gym trainer who spots your form,
-                counts your reps, and gives crisp cues so every set feels on point.
+    st.markdown(
+        """
+        <div style="background: #11161f; padding: 24px; border-radius: 24px;
+                    border: 1px solid rgba(255,255,255,0.06);">
+          <p style="font-size:0.95rem; color:#cfd6e8; margin:0 0 16px; line-height:1.7;">
+            Meet your AI coach — a friendly gym trainer who spots your form,
+            counts your reps, and gives crisp cues so every set feels on point.
+          </p>
+          <div style="display:flex; align-items:center; gap:16px;">
+            <div style="width:100px; height:100px; border-radius:24px; background:#171e2f;
+                        display:flex; align-items:center; justify-content:center;">
+              <svg width="72" height="72" viewBox="0 0 72 72" fill="none"
+                   xmlns="http://www.w3.org/2000/svg">
+                <rect x="8" y="34" width="56" height="28" rx="14" fill="#222b3d"/>
+                <rect x="18" y="10" width="36" height="40" rx="18" fill="#3d5d7c"/>
+                <circle cx="36" cy="18" r="12" fill="#dce0ea"/>
+                <rect x="6" y="42" width="12" height="8" rx="4" fill="#d9920a"/>
+                <rect x="54" y="42" width="12" height="8" rx="4" fill="#d9920a"/>
+                <path d="M14 30L26 30" stroke="#dce0ea" stroke-width="2" stroke-linecap="round"/>
+                <path d="M46 30L58 30" stroke="#dce0ea" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div style="flex:1;">
+              <p style="font-size:0.78rem; color:#838fba; margin:0 0 8px; text-transform:uppercase; letter-spacing:0.16em;">
+                Coach says
               </p>
-              <div style="display:flex; align-items:center; gap:16px;">
-                <div style="width:100px; height:100px; border-radius:24px; background:#171e2f;
-                            display:flex; align-items:center; justify-content:center;">
-                  <svg width="72" height="72" viewBox="0 0 72 72" fill="none"
-                       xmlns="http://www.w3.org/2000/svg">
-                    <rect x="8" y="34" width="56" height="28" rx="14" fill="#222b3d"/>
-                    <rect x="18" y="10" width="36" height="40" rx="18" fill="#3d5d7c"/>
-                    <circle cx="36" cy="18" r="12" fill="#dce0ea"/>
-                    <rect x="6" y="42" width="12" height="8" rx="4" fill="#d9920a"/>
-                    <rect x="54" y="42" width="12" height="8" rx="4" fill="#d9920a"/>
-                    <path d="M14 30L26 30" stroke="#dce0ea" stroke-width="2" stroke-linecap="round"/>
-                    <path d="M46 30L58 30" stroke="#dce0ea" stroke-width="2" stroke-linecap="round"/>
-                  </svg>
-                </div>
-                <div style="flex:1;">
-                  <p style="font-size:0.78rem; color:#838fba; margin:0 0 8px; text-transform:uppercase; letter-spacing:0.16em;">
-                    Coach says
-                  </p>
-                  <p style="font-size:0.88rem; color:#e7ecff; margin:0; line-height:1.6;">
-                    “Stay tight, keep your core engaged,
-                    and push through the last rep with confidence.”
-                  </p>
-                </div>
-              </div>
+              <p style="font-size:0.88rem; color:#e7ecff; margin:0; line-height:1.6;">
+                &ldquo;Stay tight, keep your core engaged,
+                and push through the last rep with confidence.&rdquo;
+              </p>
             </div>
-            """,
-            unsafe_allow_html=True,
-        )
-    trainer_image_path = os.path.join(os.getcwd(), "Landing Page", "images", "image_trainer.jpeg")
-    with col2:
-        st.markdown(
-            """
-            <div style="background: #11161f; padding: 22px; border-radius: 24px;
-                        border: 1px solid rgba(255,255,255,0.06); text-align:center;">
-              <div style="margin-bottom: 14px;">
-                <span style="display:inline-block; padding:10px 18px; border-radius:24px;
-                             background: rgba(217,146,10,0.12); color:#f5a623;
-                             font-weight:700; font-size:0.78rem; letter-spacing:0.12em;">
-                  TRAINER
-                </span>
-              </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        if os.path.exists(trainer_image_path):
-            st.image(trainer_image_path, width=260, caption="GymPulse trainer")
-        else:
-            st.warning("Trainer image not found. Please place image_trainer.jpeg in Landing Page/images.")
+          </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     if st.session_state.get("audio_to_play"):
         autoplay_audio(st.session_state.audio_to_play)
 
