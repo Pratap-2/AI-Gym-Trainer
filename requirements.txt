@@ -75,6 +75,7 @@ streamlit-webrtc==0.64.5
 tenacity==9.1.4
 toml==0.10.2
 tornado==6.5.7
+libgl1
 typing-extensions==4.15.0
 typing-inspection==0.4.2
 tzdata==2026.2
