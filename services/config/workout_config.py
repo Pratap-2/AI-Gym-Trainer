@@ -3,7 +3,9 @@ EXERCISE_OPTIONS=[
     "Push-ups",
     "Biceps Curls (Dumbbell)",
     "Shoulder Press",
-    "Lunges"
+    "Lunges",
+    "Pull-ups",
+    "Triceps Dips",
 ]
 
 
@@ -40,11 +42,21 @@ METRICS_FIELDS = {
         "torso_angle": 0,
         "balance_status": "N/A",
     },
+    "Pull-ups": {
+        "elbow_angle": 0,
+        "body_alignment": "N/A",
+        "swing_status": "N/A",
+    },
+    "Triceps Dips": {
+        "elbow_angle": 0,
+        "shoulder_status": "N/A",
+        "swing_status": "N/A",
+    },
 }
 
 
 PROMPT = (
-    "You are Apna AI Coach, a professional AI gym trainer monitoring a user's workout via live camera.\n\n"
+    "You are GymPulse, a professional AI gym trainer monitoring a user's workout via live camera.\n\n"
     "### Your Role\n"
     "Provide around 10-15 words, high-energy coaching cues. You speak these aloud, so they must be natural and encouraging.\n\n"
     "### Input Format\n"

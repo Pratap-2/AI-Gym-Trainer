@@ -12,6 +12,8 @@ from detectors.pushup import PushUpDetector
 from detectors.biceps_curl import BicepsCurlDetector
 from detectors.shoulder_press import ShoulderPressDetector
 from detectors.lunges import LungesDetector
+from detectors.pullups import PullUpDetector
+from detectors.triceps_dips import TricepsDipsDetector
 from services.config.workout_config import POSE_CONNECTIONS
 
 
@@ -41,6 +43,8 @@ class VideoProcessorClass(VideoProcessorBase):
             "Biceps Curls (Dumbbell)": BicepsCurlDetector(),
             "Shoulder Press": ShoulderPressDetector(),
             "Lunges": LungesDetector(),
+            "Pull-ups": PullUpDetector(),
+            "Triceps Dips": TricepsDipsDetector(),
         }
 
         self._frame_timestamps_ms = 0
@@ -121,6 +125,10 @@ class VideoProcessorClass(VideoProcessorBase):
             self._draw_press_overlays(img, metrics)
         elif ex_type == "Lunges":
             self._draw_lunge_overlays(img, metrics)
+        elif ex_type == "Pull-ups":
+            self._draw_pullup_overlays(img, metrics)
+        elif ex_type == "Triceps Dips":
+            self._draw_tricepsdip_overlays(img, metrics)
 
 
     def _draw_squats_overlays(self, img, metrics):
@@ -181,6 +189,32 @@ class VideoProcessorClass(VideoProcessorBase):
         cv2.putText(
             img,
             f"BALANCE: {metrics['balance_status']}",
+            (20, h - 20),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 255, 0),
+            2,
+        )
+
+    def _draw_pullup_overlays(self, img, metrics):
+        h, _ = img.shape[:2]
+
+        cv2.putText(
+            img,
+            f"BODY: {metrics['body_alignment']} | SWING: {metrics['swing_status']}",
+            (20, h - 20),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1,
+            (0, 255, 0),
+            2,
+        )
+
+    def _draw_tricepsdip_overlays(self, img, metrics):
+        h, _ = img.shape[:2]
+
+        cv2.putText(
+            img,
+            f"SHOULDER: {metrics['shoulder_status']} | TORSO: {metrics['swing_status']}",
             (20, h - 20),
             cv2.FONT_HERSHEY_SIMPLEX,
             1,

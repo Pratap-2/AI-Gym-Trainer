@@ -1,23 +1,35 @@
 /* =========================================================
-   GLOBAL THEME
+   TOKENS
 ========================================================= */
 
-.stApp {
-  background-color: #0A0D14;
-  color: #fff;
-}
-
-[data-testid="stSidebar"] {
-  background-color: #111520;
+:root {
+  --bg: #0B0D12;
+  --surface: #141820;
+  --surface-raised: #1C2030;
+  --text: #DCE0EA;
+  --text-muted: #585E6E;
+  --text-dim: #8A90A0;
+  --amber: #D9920A;
+  --amber-fill: #E8A020;
+  --amber-faint: rgba(217, 146, 10, 0.09);
+  --amber-line: rgba(217, 146, 10, 0.35);
+  --line: rgba(255, 255, 255, 0.045);
+  --line-strong: rgba(255, 255, 255, 0.08);
 }
 
 /* =========================================================
-   TYPOGRAPHY (SCOPED – safer)
+   RESET / BASE
 ========================================================= */
 
-.block-container,
-.block-container * {
-  font-family: 'AdobeClean', sans-serif !important;
+.stApp {
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+* {
+  font-family: 'AdobeClean', system-ui, -apple-system, sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
 }
 
 /* =========================================================
@@ -25,157 +37,479 @@
 ========================================================= */
 
 .block-container {
-  padding: 50px 3rem !important;
-  max-width: 750px !important;
+  padding: 56px 2.75rem 72px !important;
+  max-width: 880px !important;
+}
+
+/* =========================================================
+   TYPOGRAPHY SCALE
+========================================================= */
+
+.stApp h1,
+[data-testid="stMarkdownContainer"] h1 {
+  font-size: 1.75rem !important;
+  font-weight: 300 !important;
+  letter-spacing: -0.01em !important;
+  color: var(--text) !important;
+  line-height: 1.2 !important;
+}
+
+.stApp h2,
+[data-testid="stMarkdownContainer"] h2 {
+  font-size: 1.2rem !important;
+  font-weight: 400 !important;
+  color: var(--text) !important;
+  letter-spacing: 0.01em !important;
+}
+
+.stApp h3,
+[data-testid="stMarkdownContainer"] h3,
+[data-testid="stMarkdownContainer"] h4 {
+  font-size: 0.7rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.09em !important;
+  text-transform: uppercase !important;
+  color: var(--text-dim) !important;
+  margin-bottom: 1rem !important;
+}
+
+/* subheader / h3 in main column */
+[data-testid="stHeadingWithActionElements"] h3 {
+  font-size: 0.68rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.09em !important;
+  text-transform: uppercase !important;
+  color: var(--text-dim) !important;
+}
+
+p,
+[data-testid="stMarkdownContainer"] p {
+  font-size: 0.9rem !important;
+  line-height: 1.65 !important;
+  color: var(--text-dim) !important;
+}
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+[data-testid="stSidebar"] {
+  background-color: #0E1118 !important;
+  border-right: 1px solid var(--line) !important;
+}
+
+[data-testid="stSidebar"] .block-container {
+  padding: 36px 1.5rem 48px !important;
+  max-width: 100% !important;
+}
+
+[data-testid="stSidebar"] h1 {
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.01em !important;
+  color: var(--text) !important;
+}
+
+[data-testid="stSidebar"] h2,
+[data-testid="stSidebar"] h3 {
+  font-size: 0.63rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase !important;
+  color: var(--text-muted) !important;
+  margin-top: 1.5rem !important;
+}
+
+/* Sidebar nav links */
+[data-testid="stSidebarNavLink"] {
+  border-radius: 0 !important;
+  font-size: 0.85rem !important;
+  color: var(--text-dim) !important;
+  padding: 0.45rem 0.75rem !important;
+  transition: color 0.15s, background 0.15s !important;
+}
+
+[data-testid="stSidebarNavLink"]:hover {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+[data-testid="stSidebarNavLink"][aria-current="page"] {
+  background: transparent !important;
+  border-left: 2px solid var(--amber) !important;
+  color: var(--text) !important;
+}
+
+/* user caption */
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
+  font-size: 0.75rem !important;
+  color: var(--text-muted) !important;
+  letter-spacing: 0.02em !important;
 }
 
 /* =========================================================
    BUTTONS
 ========================================================= */
 
+/* Base — all buttons */
 button,
 .stButton button,
 .stDownloadButton button,
-.MuiBox-root button {
-  background-color: #181D2A !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  border-radius: 0 !important;
-  font-family: 'AdobeClean', sans-serif !important;
+[data-testid="stBaseButton-secondary"],
+[data-testid="stBaseButton-secondaryFormSubmit"] {
+  background: transparent !important;
+  border: 1px solid var(--line-strong) !important;
+  border-radius: 18px !important;
+  color: var(--text-dim) !important;
+  font-size: 0.7rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.09em !important;
+  text-transform: uppercase !important;
+  padding: 0.55rem 1.25rem !important;
+  transition: border-color 0.15s, color 0.15s, background 0.15s !important;
+}
+
+button:hover,
+.stButton button:hover {
+  border-color: var(--line-strong) !important;
+  background: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+/* Primary CTA — Start Workout */
+[data-testid="stButton"] button[kind="primary"],
+[data-testid="stBaseButton-primary"],
+button[data-testid="stBaseButton-primary"] {
+  background: var(--amber) !important;
+  border-color: var(--amber) !important;
+  color: #000 !important;
+  font-weight: 600 !important;
+}
+
+[data-testid="stButton"] button[kind="primary"]:hover,
+[data-testid="stBaseButton-primary"]:hover {
+  background: var(--amber-fill) !important;
+  border-color: var(--amber-fill) !important;
+}
+
+/* Form submit buttons */
+[data-testid="stBaseButton-secondaryFormSubmit"] {
+  width: 100% !important;
+  background: var(--surface) !important;
+  border-color: var(--line-strong) !important;
+  color: var(--text-dim) !important;
+  justify-content: center !important;
+  margin-top: 0.5rem !important;
+}
+
+[data-testid="stBaseButton-secondaryFormSubmit"]:hover {
+  background: var(--surface-raised) !important;
+  color: var(--text) !important;
 }
 
 /* =========================================================
-   INPUTS & TEXT ELEMENTS
+   INPUTS  — border only on the actual element, never on wrappers
 ========================================================= */
 
-input,
-textarea,
-p,
-li,
-code,
-[data-testid="stSelectbox"] > div > div,
-[data-baseweb="select"] > div,
+/* Strip all borders off intermediate wrapper divs first */
+[data-testid="stTextInput"]>div,
+[data-testid="stTextArea"]>div,
+[data-testid="stNumberInputContainer"]>div {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Apply the single border directly to the control */
+[data-testid="stTextInput"] input,
+[data-testid="stTextArea"] textarea {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--line-strong) !important;
+  border-radius: 16px !important;
+  color: var(--text) !important;
+  font-size: 0.875rem !important;
+  padding: 0.55rem 0.75rem !important;
+  width: 100% !important;
+  transition: border-color 0.15s !important;
+}
+
+/* Number input: border on the shared row container */
+[data-testid="stNumberInputContainer"] {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--line-strong) !important;
+  border-radius: 16px !important;
+}
+
+[data-testid="stNumberInputContainer"] input {
+  background: transparent !important;
+  border: none !important;
+  color: var(--text) !important;
+  font-size: 0.875rem !important;
+}
+
+/* Increment / decrement buttons inside number input */
+[data-testid="stNumberInputContainer"] button {
+  background: transparent !important;
+  border: none !important;
+  border-left: 1px solid var(--line-strong) !important;
+  color: var(--text-dim) !important;
+  padding: 0 0.5rem !important;
+  font-size: 0.75rem !important;
+  border-radius: 0 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+[data-testid="stTextInput"] input:focus,
+[data-testid="stTextArea"] textarea:focus {
+  border-color: var(--amber-line) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Input labels */
+[data-testid="stTextInput"] label,
+[data-testid="stTextArea"] label,
+[data-testid="stNumberInputContainer"] label,
+[data-testid="stSelectbox"] label,
+.stTextInput label,
+.stTextArea label,
+.stNumberInput label,
+.stSelectbox label {
+  font-size: 0.68rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+  color: var(--text-muted) !important;
+  margin-bottom: 0.4rem !important;
+  display: block !important;
+}
+
+/* =========================================================
+   SELECT / DROPDOWN
+========================================================= */
+
+[data-testid="stSelectbox"]>div>div,
+[data-baseweb="select"]>div {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--line-strong) !important;
+  border-radius: 16px !important;
+  color: var(--text) !important;
+  font-size: 0.875rem !important;
+}
+
 [data-baseweb="popover"] ul,
-[data-baseweb="menu"] {
-  border-radius: 0 !important;
-  font-family: 'AdobeClean', sans-serif !important;
-}
-
-/* =========================================================
-   METRICS
-========================================================= */
-
-[data-testid="stMetric"] {
-  background-color: #181D2A;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 1rem 1.2rem;
-  border-radius: 0;
-}
-
-[data-testid="stMetric"] div {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-[data-testid="stMetricValue"] {
-  font-size: 1.5rem !important;
-  font-weight: 400 !important;
-}
-
-[data-testid="stMetricLabel"] {
-  font-size: 15px !important;
-  opacity: 0.6;
-}
-
-[data-testid="stMetric"] div label p {
-  font-size: 16px !important;
-}
-
-/* =========================================================
-   CONTAINERS / CARDS
-========================================================= */
-
-.stContainer,
-.stExpander,
-.stTabs,
-.stColumns,
-.stPopover,
-.stAlertContainer,
-.stStatusContainer,
-.stMetric,
-.stTable,
-.stDataFrame,
-.stForm,
-.stSelectbox,
-[data-baseweb="select"] > div,
-[data-testid="stForm"],
-[data-testid="stMetric"],
-[data-testid="stNumberInputContainer"],
-[data-testid="stDataFrameColumnMenu"],
-[data-testid="stHeadingWithActionElements"],
-[data-testid="stCaptionContainer"] p,
-[data-testid="stAlertContentInfo"] p,
-[data-testid="stSidebarNavLink"],
-[data-testid="stMarkdownContainer"] h3,
-[data-baseweb="popover"],
 [data-baseweb="menu"],
 div[role="menu"],
 div[role="menuitem"] {
-  border-radius: 0 !important;
-  font-family: 'AdobeClean', sans-serif !important;
-}
-
-/* =========================================================
-   DATAFRAME FIX
-========================================================= */
-
-.stDataFrame,
-.stDataFrame div,
-.stDataFrameGlideDataEditor {
-  border-radius: 0 !important;
-  font-family: 'AdobeClean', sans-serif !important;
-}
-
-/* =========================================================
-   INTERACTIVE ELEMENTS
-========================================================= */
-
-.stTextInput,
-.stTextArea,
-.stNumberInput,
-.stSlider,
-.stMultiselect,
-.stRadio,
-.stCheckbox,
-.stToggle,
-.stFileUploader,
-.stColorPicker,
-.stDateInput,
-.stTimeInput,
-.stCameraInput,
-[data-testid="stTextInput"] > div,
-[data-testid="stButton"] button,
-[data-testid="stBaseButton-secondaryFormSubmit"],
-[data-testid="stStatusWidget"] {
-  border-radius: 0 !important;
-  font-family: 'AdobeClean', sans-serif !important;
-}
-
-/* =========================================================
-   MARKDOWN
-========================================================= */
-
-[data-testid="stMarkdownContainer"] strong {
-  font-family: 'AdobeClean', sans-serif !important;
+  background-color: var(--surface-raised) !important;
+  border: 1px solid var(--line-strong) !important;
+  border-radius: 2px !important;
 }
 
 /* =========================================================
    FORM
 ========================================================= */
 
-.stForm {
-  margin-top: 2rem !important;
-  padding: 1.5rem 1rem !important;
-  background-color: #181D2A !important;
-  color: #fff;
+[data-testid="stForm"] {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin-top: 1.5rem !important;
+}
+
+/* =========================================================
+   METRICS  — spacious, border-free cards
+========================================================= */
+
+[data-testid="stMetric"] {
+  background-color: var(--surface) !important;
+  border: none !important;
+  border-top: 1px solid var(--line) !important;
+  padding: 1.25rem 0 !important;
+  margin-bottom: 0.25rem !important;
+  border-radius: 16px !important;
+  transition: none !important;
+}
+
+[data-testid="stMetricValue"] {
+  font-size: 1.4rem !important;
+  font-weight: 300 !important;
+  color: var(--text) !important;
+  letter-spacing: -0.01em !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+[data-testid="stMetricLabel"] {
+  font-size: 0.65rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: var(--text-muted) !important;
+  opacity: 1 !important;
+}
+
+[data-testid="stMetric"] div label p {
+  font-size: 0.65rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  color: var(--text-muted) !important;
+}
+
+/* hide the delta arrow decoration if unused */
+[data-testid="stMetricDelta"] {
+  display: none !important;
+}
+
+/* =========================================================
+   TABS
+========================================================= */
+
+[data-testid="stTabs"] [data-baseweb="tab-list"] {
+  border-bottom: 1px solid var(--line) !important;
+  gap: 0 !important;
+  margin-bottom: 1.5rem !important;
+}
+
+[data-testid="stTabs"] [data-baseweb="tab"] {
+  border-radius: 16px !important;
+  font-size: 0.68rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.09em !important;
+  text-transform: uppercase !important;
+  color: var(--text-muted) !important;
+  padding: 0.75rem 1.25rem !important;
+  background: transparent !important;
+  border: none !important;
+  border-bottom: 2px solid transparent !important;
+  margin-bottom: -1px !important;
+  transition: color 0.15s !important;
+}
+
+[data-testid="stTabs"] [data-baseweb="tab"]:hover {
+  color: var(--text-dim) !important;
+  background: transparent !important;
+}
+
+[data-testid="stTabs"] [aria-selected="true"] {
+  border-bottom: 2px solid var(--amber) !important;
+  color: var(--text) !important;
+}
+
+/* =========================================================
+   ALERTS / COACH FEEDBACK
+========================================================= */
+
+[data-testid="stAlert"] {
+  border: none !important;
+  border-left: 2px solid var(--amber) !important;
+  border-radius: 16px !important;
+  background-color: var(--amber-faint) !important;
+  padding: 0.85rem 1rem !important;
+}
+
+[data-testid="stAlert"] p,
+[data-testid="stAlertContentInfo"] p,
+[data-testid="stAlertContentSuccess"] p,
+[data-testid="stAlertContentWarning"] p,
+[data-testid="stAlertContentError"] p {
+  font-size: 0.875rem !important;
+  color: var(--text) !important;
+}
+
+/* =========================================================
+   INFO / SUCCESS override — same amber treatment
+========================================================= */
+
+[data-testid="stAlert"][data-baseweb="notification"] {
+  border-left: 2px solid var(--amber) !important;
+  background: var(--amber-faint) !important;
+}
+
+/* =========================================================
+   DATAFRAME / TABLE
+========================================================= */
+
+.stDataFrame,
+.stDataFrame div,
+.stDataFrameGlideDataEditor {
+  border-radius: 16px !important;
+  font-size: 0.825rem !important;
+}
+
+/* =========================================================
+   DIVIDERS
+========================================================= */
+
+hr {
+  border: none !important;
+  border-top: 1px solid var(--line) !important;
+  margin: 2rem 0 !important;
+}
+
+/* =========================================================
+   CAPTION / FOOTNOTE
+========================================================= */
+
+[data-testid="stCaptionContainer"] p,
+small,
+.stCaption {
+  font-size: 0.72rem !important;
+  color: var(--text-muted) !important;
+  letter-spacing: 0.02em !important;
+}
+
+/* =========================================================
+   EXPANDER
+========================================================= */
+
+[data-testid="stExpander"] {
+  border: 1px solid var(--line) !important;
+  border-radius: 16px !important;
+  background: transparent !important;
+}
+
+[data-testid="stExpander"] summary {
+  font-size: 0.78rem !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.04em !important;
+  color: var(--text-dim) !important;
+}
+
+/* =========================================================
+   SPINNER / STATUS
+========================================================= */
+
+[data-testid="stStatusWidget"] {
+  border-radius: 16px !important;
+  font-size: 0.78rem !important;
+  color: var(--text-muted) !important;
+}
+
+/* =========================================================
+   SELECTBOX border-radius sweeper
+========================================================= */
+
+[data-testid="stSelectbox"],
+[data-testid="stNumberInputContainer"],
+[data-testid="stTextInput"]>div {
+  border-radius: 16px !important;
+}
+
+/* =========================================================
+   SCROLLBAR
+========================================================= */
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--line-strong);
+  border-radius: 2px;
 }

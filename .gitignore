@@ -10,3 +10,7 @@ wheels/
 .venv
 .python-version
 uv.lock
+
+# Secrets
+.env
+.streamlit/secrets.toml

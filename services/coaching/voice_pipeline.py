@@ -57,9 +57,29 @@ class VoicePipeline:
 
         elif exercise == "Lunges":
             balance = metrics.get("balance_status", "")
-            
+
             if balance == "OFF BALANCE":
                 return "The user is losing balance during the lunge — feet should be hip-width apart."
+
+        elif exercise == "Pull-ups":
+            body_alignment = metrics.get("body_alignment", "")
+            swing = metrics.get("swing_status", "")
+
+            if body_alignment == "BODY SWINGING":
+                return "The user's body is swinging during the pull-up — engage the core to stay straight."
+
+            if swing == "SWINGING":
+                return "The user's hips are swinging — keep the legs straight and body controlled."
+
+        elif exercise == "Triceps Dips":
+            shoulder = metrics.get("shoulder_status", "")
+            swing = metrics.get("swing_status", "")
+
+            if shoulder == "SHRUGGING":
+                return "The user is shrugging their shoulders — press down through the arms and keep shoulders down."
+
+            if swing == "LEANING FORWARD":
+                return "The user is leaning too far forward — keep the torso upright during the dip."
 
         return None
 

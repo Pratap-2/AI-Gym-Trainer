@@ -1,379 +1,780 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Real-time AI GYM Trainer</title>
-    <link rel="stylesheet" href="style.css" />
-    <style>
-      @font-face {
-        font-family: "Averta";
-        src: url("fonts/Averta.woff2") format("woff2");
-        font-weight: normal;
-        font-style: normal;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GymPulse — AI Real-time Gym Coach</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    @font-face {
+      font-family: "Averta";
+      src: url("fonts/Averta.woff2") format("woff2");
+      font-weight: normal;
+      font-style: normal;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&family=Instrument+Serif:ital,wght@0,400;1,400&display=swap"
+    rel="stylesheet" />
+
+  <style>
+    /* ── SCROLL PROGRESS BAR ── */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: linear-gradient(90deg, #f5a623, #00d4ff);
+      z-index: 9999;
+      transition: width 0.05s linear;
+    }
+
+    /* ── HERO CANVAS ── */
+    #hero-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(44px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── MARQUEE ── */
+    .marquee-section {
+      overflow: hidden;
+      padding: 18px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.015);
+      position: relative;
+      z-index: 1;
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 0;
+      white-space: nowrap;
+      animation: marquee-scroll 22s linear infinite;
+    }
+
+    .marquee-track span {
+      font-family: var(--font-body);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 0 28px;
+    }
+
+    .marquee-track span.accent {
+      color: var(--amber);
+    }
+
+    @keyframes marquee-scroll {
+      from {
+        transform: translateX(0);
       }
-    </style>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&family=Instrument+Serif:ital,wght@0,400;1,400&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <!-- GRID OVERLAY -->
-    <div class="grid-overlay" aria-hidden="true"></div>
 
-    <!-- NAV -->
-    <nav class="nav">
-      <div class="nav-logo">
-        <span class="logo-bracket">(</span>AI GYM COACH<span
-          class="logo-bracket"
-          >)</span
-        >
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how-it-works {
+      position: relative;
+      z-index: 1;
+      padding: 120px 48px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+    }
+
+    .steps-row {
+      display: grid;
+      grid-template-columns: 1fr 48px 1fr 48px 1fr;
+      align-items: center;
+      margin-top: 64px;
+      gap: 0;
+    }
+
+    .step {
+      border: 1px solid var(--border);
+      padding: 36px 28px;
+      background: rgba(255, 255, 255, 0.02);
+      transition: border-color 0.3s, background 0.3s;
+      position: relative;
+    }
+
+    .step:hover {
+      border-color: rgba(245, 166, 35, 0.3);
+      background: rgba(245, 166, 35, 0.04);
+    }
+
+    .step-number {
+      font-family: var(--font-body);
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      color: var(--amber);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .step-icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+      display: block;
+      line-height: 1;
+    }
+
+    .step-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .step-desc {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.7;
+    }
+
+    .step-connector {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-connector svg {
+      color: rgba(245, 166, 35, 0.3);
+      width: 24px;
+      height: 24px;
+    }
+
+    /* animated connector dots */
+    .connector-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--amber);
+      animation: dot-travel 2s ease-in-out infinite;
+      opacity: 0;
+    }
+
+    @keyframes dot-travel {
+      0% {
+        opacity: 0;
+        transform: translateX(-12px);
+      }
+
+      20% {
+        opacity: 1;
+      }
+
+      80% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+        transform: translateX(12px);
+      }
+    }
+
+    /* ── 3D CARD TILT ── */
+    .img-card {
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    body {
+      cursor: none;
+    }
+
+    #cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border: 1px solid rgba(245, 166, 35, 0.7);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, border-color 0.2s, background 0.2s;
+      mix-blend-mode: difference;
+    }
+
+    #cursor.hover {
+      width: 36px;
+      height: 36px;
+      background: rgba(245, 166, 35, 0.08);
+      border-color: var(--amber);
+    }
+
+    #cursor-dot {
+      position: fixed;
+      width: 4px;
+      height: 4px;
+      background: var(--amber);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.05s;
+    }
+
+    @media (max-width: 960px) {
+      .steps-row {
+        grid-template-columns: 1fr;
+      }
+
+      .step-connector {
+        transform: rotate(90deg);
+        padding: 8px 0;
+      }
+
+      .how-it-works {
+        padding: 80px 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SCROLL PROGRESS -->
+  <div id="scroll-progress"></div>
+
+  <!-- CUSTOM CURSOR -->
+  <div id="cursor"></div>
+  <div id="cursor-dot"></div>
+
+  <!-- GRID OVERLAY (kept subtle, canvas replaces the hero version) -->
+  <div class="grid-overlay" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-logo">
+      <span class="logo-bracket">(</span>AI GYM COACH<span class="logo-bracket">)</span>
+    </div>
+    <div class="nav-links">
+      <a href="#how-it-works">How It Works</a>
+      <a href="#visuals">Gallery</a>
+      <a href="#demo">Demo</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <canvas id="hero-canvas"></canvas>
+    <div class="hero-bg"></div>
+    <div class="hero-tag" style="position:relative;z-index:2;">
+      <span class="dot"></span>
+      <span>AI-POWERED · REAL-TIME · GYM COACH</span>
+    </div>
+
+    <h1 class="hero-title" style="position:relative;z-index:2;">
+      <span class="line-one">GYM</span>
+      <span class="line-two">PULSE</span>
+    </h1>
+
+    <p class="hero-sub" style="position:relative;z-index:2;">
+      Your form. Analyzed. Corrected. In milliseconds.<br />
+      Computer vision that watches every rep and tells you exactly what to fix.
+    </p>
+
+    <p class="hero-quote"
+      style="position:relative;z-index:2; color: #bbb; margin-top: 24px; font-size: 16px; max-width: 680px;">
+      “Train smarter, not harder — every rep deserves real-time feedback, so you can move with confidence and level up
+      faster.”
+    </p>
+
+    <div class="hero-cta-row" style="position:relative;z-index:2;">
+      <a href="https://ai-realtime-gym-coach.streamlit.app/" target="_blank" rel="noopener noreferrer"
+        class="btn-primary" id="cta-button">
+        <span>Try it live</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+      </a>
+      <a href="#demo" class="btn-ghost">WATCH DEMO ↓</a>
+    </div>
+
+    <!-- Live metrics strip -->
+    <div class="metrics-strip" style="position:relative;z-index:2;">
+      <div class="metric">
+        <span class="metric-val"><span class="count-val" data-target="100">0</span><span class="unit">ms</span></span>
+        <span class="metric-label">Avg Latency</span>
       </div>
-      <div class="nav-links">
-        <a href="#visuals">Gallery</a>
-        <a href="#demo">Demo</a>
-        <a href="#contact">Contact</a>
+      <div class="metric-divider"></div>
+      <div class="metric">
+        <span class="metric-val"><span class="count-val" data-target="7">0</span><span class="unit">+</span></span>
+        <span class="metric-label">Exercises</span>
       </div>
-    </nav>
+      <div class="metric-divider"></div>
+      <div class="metric">
+        <span class="metric-val"><span class="count-val" data-target="95">0</span><span class="unit">%</span></span>
+        <span class="metric-label">Form Accuracy</span>
+      </div>
+    </div>
+  </section>
 
-    <!-- HERO -->
-    <section class="hero" id="hero">
-      <div class="hero-tag">
-        <span class="dot"></span>
-        <span>AI-POWERED · REAL-TIME · GYM COACH</span>
+  <!-- TECH STACK MARQUEE -->
+  <div class="marquee-section">
+    <div class="marquee-track">
+      <span class="accent">MEDIAPIPE</span><span>·</span>
+      <span>GROQ</span><span>·</span>
+      <span class="accent">LLAMA-3.3-70B</span><span>·</span>
+      <span>PYTHON</span><span>·</span>
+      <span class="accent">STREAMLIT</span><span>·</span>
+      <span>WEBRTC</span><span>·</span>
+      <span class="accent">OPENCV</span><span>·</span>
+      <span>7 EXERCISES</span><span>·</span>
+      <span class="accent">REAL-TIME VOICE</span><span>·</span>
+      <span>SQLITE</span><span>·</span>
+      <!-- Duplicate for seamless loop -->
+      <span class="accent">MEDIAPIPE</span><span>·</span>
+      <span>GROQ</span><span>·</span>
+      <span class="accent">LLAMA-3.3-70B</span><span>·</span>
+      <span>PYTHON</span><span>·</span>
+      <span class="accent">STREAMLIT</span><span>·</span>
+      <span>WEBRTC</span><span>·</span>
+      <span class="accent">OPENCV</span><span>·</span>
+      <span>7 EXERCISES</span><span>·</span>
+      <span class="accent">REAL-TIME VOICE</span><span>·</span>
+      <span>SQLITE</span><span>·</span>
+    </div>
+  </div>
+
+  <!-- VISUAL SECTION -->
+  <section class="visuals reveal" id="visuals">
+    <div class="section-header center-header">
+      <span class="section-tag">// GALLERY</span>
+      <h2 class="section-title">Built for<br /><em>real athletes</em></h2>
+    </div>
+
+    <div class="card-grid">
+      <div class="img-card card-tilt-left card-float-1">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1574680096145-d05b474e2155?w=600&q=80&fit=crop" alt="Squats" />
+            <div class="card-scan-line"></div>
+            <div class="card-label">Squats</div>
+          </div>
+          <div class="card-corner tl"></div>
+          <div class="card-corner tr"></div>
+          <div class="card-corner bl"></div>
+          <div class="card-corner br"></div>
+        </div>
+      </div>
+      <div class="img-card card-center card-float-2">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=600&q=80&fit=crop"
+              alt="Push-ups" />
+            <div class="card-scan-line"></div>
+            <div class="card-label">Push-ups</div>
+          </div>
+          <div class="card-corner tl"></div>
+          <div class="card-corner tr"></div>
+          <div class="card-corner bl"></div>
+          <div class="card-corner br"></div>
+        </div>
+      </div>
+      <div class="img-card card-tilt-right card-float-3">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&q=80&fit=crop"
+              alt="Bicep Curls" />
+            <div class="card-scan-line"></div>
+            <div class="card-label">Bicep Curls</div>
+          </div>
+          <div class="card-corner tl"></div>
+          <div class="card-corner tr"></div>
+          <div class="card-corner bl"></div>
+          <div class="card-corner br"></div>
+        </div>
+      </div>
+      <div class="img-card card-tilt-right card-float-4">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1532029837206-abbe2b7620e3?w=600&q=80&fit=crop"
+              alt="Shoulder Press" />
+            <div class="card-scan-line"></div>
+            <div class="card-label">Shoulder Press</div>
+          </div>
+          <div class="card-corner tl"></div>
+          <div class="card-corner tr"></div>
+          <div class="card-corner bl"></div>
+          <div class="card-corner br"></div>
+        </div>
+      </div>
+      <div class="img-card card-center card-float-5">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1434608519344-49d77a699e1d?w=600&q=80&fit=crop" alt="Lunges" />
+            <div class="card-scan-line"></div>
+            <div class="card-label">Lunges</div>
+          </div>
+          <div class="card-corner tl"></div>
+          <div class="card-corner tr"></div>
+          <div class="card-corner bl"></div>
+          <div class="card-corner br"></div>
+        </div>
+      </div>
+      <div class="img-card card-tilt-left card-float-6">
+        <div class="card-inner">
+          <div class="card-img-wrap">
+            <img src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=600&q=80&fit=crop"
+              alt="Pull-ups" />
+            <div class="card-scan-line"></div>
+            <div class="card-label">Pull-ups</div>
+          </div>
+          <div class="card-corner tl"></div>
+          <div class="card-corner tr"></div>
+          <div class="card-corner bl"></div>
+          <div class="card-corner br"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-it-works reveal" id="how-it-works">
+    <div class="section-header center-header">
+      <span class="section-tag">// HOW IT WORKS</span>
+      <h2 class="section-title">Three steps.<br /><em>Instant results.</em></h2>
+    </div>
+
+    <div class="steps-row">
+      <!-- Step 1 -->
+      <div class="step">
+        <span class="step-number">01 / CAPTURE</span>
+        <span class="step-icon">📷</span>
+        <div class="step-title">Camera Streams</div>
+        <p class="step-desc">Your webcam captures live video. No special hardware needed — phone or laptop camera works
+          instantly.</p>
       </div>
 
-      <h1 class="hero-title">
-        <span class="line-one">REAL-TIME</span>
-        <span class="line-two">AI GYM<br />COACH</span>
-      </h1>
+      <!-- Connector -->
+      <div class="step-connector">
+        <div class="connector-dot"></div>
+      </div>
 
-      <p class="hero-sub">
-        Your form. Analyzed. Corrected. In milliseconds.<br />
-        Computer vision that watches every rep and tells you exactly what to
-        fix.
+      <!-- Step 2 -->
+      <div class="step">
+        <span class="step-number">02 / ANALYZE</span>
+        <span class="step-icon">🤖</span>
+        <div class="step-title">AI Detects</div>
+        <p class="step-desc">MediaPipe maps 33 body landmarks per frame. Joint angles are computed and checked against
+          correct form thresholds.</p>
+      </div>
+
+      <!-- Connector -->
+      <div class="step-connector">
+        <div class="connector-dot" style="animation-delay:0.4s;"></div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <span class="step-number">03 / COACH</span>
+        <span class="step-icon">🎙️</span>
+        <div class="step-title">Coach Speaks</div>
+        <p class="step-desc">Groq's Llama-3.3-70B generates a precise coaching cue. Converted to voice and played aloud
+          in under a second.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEMO SECTION -->
+  <section class="demo reveal" id="demo">
+    <div class="section-header center-header">
+      <span class="section-tag">// DEMO</span>
+      <h2 class="section-title">See it in<br /><em>action</em></h2>
+      <p class="section-desc">
+        Watch the AI detect and correct form errors in real-time. No hardware
+        required — just your phone or webcam.
+      </p>
+    </div>
+
+    <div class="video-wrapper" id="demo-video">
+      <div class="video-glow"></div>
+      <div class="video-container">
+        <div class="video-corner tl"></div>
+        <div class="video-corner tr"></div>
+        <div class="video-corner bl"></div>
+        <div class="video-corner br"></div>
+        <div class="video-status">
+          <span class="dot pulse-dot"></span>
+          <span>DEMO</span>
+        </div>
+        <video src="videos/video.mp4" controls playsinline></video>
+      </div>
+    </div>
+
+    <div class="feature-row reveal">
+      <div class="feature">
+        <span class="feature-icon">⬡</span>
+        <strong>Pose Detection</strong>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">⬡</span>
+        <strong>Audio Feedback</strong>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">⬡</span>
+        <strong>Rep Counter</strong>
+      </div>
+      <div class="feature">
+        <span class="feature-icon">⬡</span>
+        <strong>Works in Real-time</strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section class="contact reveal" id="contact">
+    <div class="contact-inner">
+      <span class="section-tag">// LET'S CONNECT</span>
+      <h2 class="contact-title">
+        Built by a human.<br /><em>Backed by data.</em>
+      </h2>
+      <p class="contact-desc">
+        Open to opportunities in ML engineering, computer vision, and AI
+        product roles.
       </p>
 
-      <div class="hero-cta-row">
-        <a
-          href="https://ai-realtime-gym-coach.streamlit.app/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn-primary"
-          id="cta-button"
-        >
-          <span>Try it live</span>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path
-              d="M3 8H13M13 8L9 4M13 8L9 12"
-              stroke="currentColor"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
+      <div class="social-grid">
+        <a href="https://www.linkedin.com/in/aditya-pratap-singh-admin/" target="_blank" rel="noopener"
+          class="social-btn" aria-label="LinkedIn">
+          <span class="social-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+              <path
+                d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+            </svg>
+          </span>
+          <span class="social-label">LinkedIn</span>
         </a>
-        <a href="#demo-video" class="btn-ghost">WATCH DEMO ↓</a>
+        <a href="https://github.com/Pratap-2/" target="_blank" rel="noopener" class="social-btn" aria-label="GitHub">
+          <span class="social-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+              <path
+                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+            </svg>
+          </span>
+          <span class="social-label">GitHub</span>
+        </a>
+        <a href="mailto:23je0051@iitism.ac.in" class="social-btn" aria-label="Email">
+          <span class="social-icon">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+              <path
+                d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.910 1.528-1.145C21.69 2.28 24 3.434 24 5.457z" />
+            </svg>
+          </span>
+          <span class="social-label">Gmail</span>
+        </a>
       </div>
+    </div>
 
-      <!-- Live metrics strip -->
-      <div class="metrics-strip">
-        <div class="metric">
-          <span class="metric-val">100<span class="unit">ms</span></span>
-          <span class="metric-label">Avg Latency</span>
-        </div>
-        <div class="metric-divider"></div>
-        <div class="metric">
-          <span class="metric-val">5<span class="unit">+</span></span>
-          <span class="metric-label">Exercises</span>
-        </div>
-        <div class="metric-divider"></div>
-        <div class="metric">
-          <span class="metric-val">95<span class="unit">%</span></span>
-          <span class="metric-label">Form Accuracy</span>
-        </div>
-      </div>
-    </section>
+    <footer class="footer">
+      <span>© 2026 AI GYM Trainer — Real-time AI Gym Trainer</span>
+    </footer>
+  </section>
 
-    <!-- VISUAL SECTION -->
-    <section class="visuals" id="visuals">
-      <div class="section-header center-header">
-        <span class="section-tag">// GALLERY</span>
-        <h2 class="section-title">Built for<br /><em>real athletes</em></h2>
-      </div>
+  <script>
+    // ── SCROLL PROGRESS BAR ──
+    const progressBar = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      progressBar.style.width = (scrolled * 100) + '%';
+    }, { passive: true });
 
-      <div class="card-grid">
-        <!-- Card 1 -->
-        <div class="img-card card-tilt-left card-float-1">
-          <div class="card-inner">
-            <div class="card-img-wrap">
-              <!-- Replace src with your image -->
-              <img
-                src="./IMGs/i1.png"
-                alt="Squat form analysis"
-                onerror="this.parentElement.classList.add('img-placeholder')"
-              />
-              <div class="card-scan-line"></div>
-            </div>
-            <div class="card-corner tl"></div>
-            <div class="card-corner tr"></div>
-            <div class="card-corner bl"></div>
-            <div class="card-corner br"></div>
-          </div>
-        </div>
+    // ── CUSTOM CURSOR ──
+    const cursor = document.getElementById('cursor');
+    const cursorDot = document.getElementById('cursor-dot');
+    let cx = 0, cy = 0;
 
-        <!-- Card 2 — tall center -->
-        <div class="img-card card-center card-float-2">
-          <div class="card-inner">
-            <div class="card-img-wrap">
-              <img
-                src="./IMGs/i2.png"
-                alt="Deadlift posture feedback"
-                onerror="this.parentElement.classList.add('img-placeholder')"
-              />
-              <div class="card-scan-line"></div>
-            </div>
-            <div class="card-corner tl"></div>
-            <div class="card-corner tr"></div>
-            <div class="card-corner bl"></div>
-            <div class="card-corner br"></div>
-          </div>
-        </div>
+    document.addEventListener('mousemove', e => {
+      cx = e.clientX; cy = e.clientY;
+      cursor.style.left = cx + 'px';
+      cursor.style.top = cy + 'px';
+      cursorDot.style.left = cx + 'px';
+      cursorDot.style.top = cy + 'px';
+    });
 
-        <!-- Card 3 -->
-        <div class="img-card card-tilt-right card-float-3">
-          <div class="card-inner">
-            <div class="card-img-wrap">
-              <img
-                src="./IMGs/i3.png"
-                alt="Overhead press alignment"
-                onerror="this.parentElement.classList.add('img-placeholder')"
-              />
-              <div class="card-scan-line"></div>
-            </div>
-            <div class="card-corner tl"></div>
-            <div class="card-corner tr"></div>
-            <div class="card-corner bl"></div>
-            <div class="card-corner br"></div>
-          </div>
-        </div>
+    document.querySelectorAll('a, button, .img-card, .step, .social-btn').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
 
-        <div class="img-card card-tilt-right card-float-4">
-          <div class="card-inner"> 
-            <div class="card-img-wrap">
-              <img
-                src="./IMGs/i4.png"
-                alt="Overhead press alignment"
-                onerror="this.parentElement.classList.add('img-placeholder')"
-              />
-              <div class="card-scan-line"></div>
-            </div>
-            <div class="card-corner tl"></div>
-            <div class="card-corner tr"></div>
-            <div class="card-corner bl"></div>
-            <div class="card-corner br"></div>
-          </div>
-        </div>
+    // ── CANVAS PARTICLE NETWORK (HERO) ──
+    (function () {
+      const canvas = document.getElementById('hero-canvas');
+      const ctx = canvas.getContext('2d');
+      let W, H, particles;
+      const COUNT = 80;
+      const MAX_DIST = 140;
+      const AMBER = 'rgba(245,166,35,';
+      const CYAN = 'rgba(0,212,255,';
 
-        <div class="img-card card-center card-float-5">
-          <div class="card-inner">
-            <div class="card-img-wrap">
-              <img
-                src="./IMGs/i5.png"
-                alt="Overhead press alignment"
-                onerror="this.parentElement.classList.add('img-placeholder')"
-              />
-              <div class="card-scan-line"></div>
-            </div>
-            <div class="card-corner tl"></div>
-            <div class="card-corner tr"></div>
-            <div class="card-corner bl"></div>
-            <div class="card-corner br"></div>
-          </div>
-        </div>
+      function resize() {
+        W = canvas.width = canvas.offsetWidth;
+        H = canvas.height = canvas.offsetHeight;
+      }
 
-        <div class="img-card card-tilt-left card-float-6">
-          <div class="card-inner">
-            <div class="card-img-wrap">
-              <img
-                src="./IMGs/i6.png"
-                alt="Overhead press alignment"
-                onerror="this.parentElement.classList.add('img-placeholder')"
-              />
-              <div class="card-scan-line"></div>
-            </div>
-            <div class="card-corner tl"></div>
-            <div class="card-corner tr"></div>
-            <div class="card-corner bl"></div>
-            <div class="card-corner br"></div>
-          </div>
-        </div>
-      </div>
-    </section>
+      function rand(min, max) { return min + Math.random() * (max - min); }
 
-    <!-- DEMO SECTION -->
-    <section class="demo" id="demo">
-      <div class="section-header center-header">
-        <span class="section-tag">// DEMO</span>
-        <h2 class="section-title">See it in<br /><em>action</em></h2>
-        <p class="section-desc">
-          Watch the AI detect and correct form errors in real-time. No hardware
-          required — just your phone or webcam.
-        </p>
-      </div>
+      function init() {
+        resize();
+        particles = Array.from({ length: COUNT }, () => ({
+          x: rand(0, W), y: rand(0, H),
+          vx: rand(-0.25, 0.25), vy: rand(-0.25, 0.25),
+          r: rand(1.5, 3),
+          color: Math.random() > 0.5 ? AMBER : CYAN,
+        }));
+      }
 
-      <div class="video-wrapper" id="demo-video">
-        <div class="video-glow"></div>
-        <div class="video-container">
-          <div class="video-corner tl"></div>
-          <div class="video-corner tr"></div>
-          <div class="video-corner bl"></div>
-          <div class="video-corner br"></div>
-          <div class="video-status">
-            <span class="dot pulse-dot"></span>
-            <span>DEMO</span>
-          </div>
-          <!-- Replace with your video. Options:
-             MP4:    <video src="your-demo.mp4" controls></video>
-             YouTube: <iframe src="https://www.youtube.com/embed/YOUR_ID" ...></iframe>
-        -->
-          <video src="videos/video.mp4" controls playsinline></video>
-          <!-- <iframe src="https://www.youtube.com/embed/YOUR_VIDEO_ID" allowfullscreen></iframe> -->
-        </div>
-      </div>
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
 
-      <!-- feature callouts below video -->
-      <div class="feature-row">
-        <div class="feature">
-          <span class="feature-icon">⬡</span>
-          <strong>Pose Detection</strong>
-        </div>
-        <div class="feature">
-          <span class="feature-icon">⬡</span>
-          <strong>Audio Feedback</strong>
-        </div>
-        <div class="feature">
-          <span class="feature-icon">⬡</span>
-          <strong>Rep Counter</strong>
-        </div>
-        <div class="feature">
-          <span class="feature-icon">⬡</span>
-          <strong>Works in Real-time</strong>
-        </div>
-      </div>
-    </section>
+        for (let i = 0; i < COUNT; i++) {
+          const p = particles[i];
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < 0 || p.x > W) p.vx *= -1;
+          if (p.y < 0 || p.y > H) p.vy *= -1;
 
-    <!-- CONTACT SECTION -->
-    <section class="contact" id="contact">
-      <div class="contact-inner">
-        <span class="section-tag">// LET'S CONNECT</span>
-        <h2 class="contact-title">
-          Built by a human.<br /><em>Backed by data.</em>
-        </h2>
-        <p class="contact-desc">
-          Open to opportunities in ML engineering, computer vision, and AI
-          product roles.
-        </p>
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.color + '0.6)';
+          ctx.fill();
 
-        <div class="social-grid">
-          <!-- LinkedIn -->
-          <a
-            href="https://www.linkedin.com/in/prince-khunt-linked-in/"
-            target="_blank"
-            rel="noopener"
-            class="social-btn"
-            aria-label="LinkedIn"
-          >
-            <span class="social-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                width="22"
-                height="22"
-              >
-                <path
-                  d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
-                />
-              </svg>
-            </span>
-            <span class="social-label">LinkedIn</span>
-          </a>
+          for (let j = i + 1; j < COUNT; j++) {
+            const q = particles[j];
+            const dx = p.x - q.x, dy = p.y - q.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < MAX_DIST) {
+              const alpha = (1 - dist / MAX_DIST) * 0.18;
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(q.x, q.y);
+              ctx.strokeStyle = p.color + alpha + ')';
+              ctx.lineWidth = 0.8;
+              ctx.stroke();
+            }
+          }
+        }
+        requestAnimationFrame(draw);
+      }
 
-          <!-- GitHub -->
-          <a
-            href="https://github.com/PrinceKhunt16"
-            target="_blank"
-            rel="noopener"
-            class="social-btn"
-            aria-label="GitHub"
-          >
-            <span class="social-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                width="22"
-                height="22"
-              >
-                <path
-                  d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"
-                />
-              </svg>
-            </span>
-            <span class="social-label">GitHub</span>
-          </a>
+      window.addEventListener('resize', () => { resize(); });
+      init();
+      draw();
+    })();
 
-          <!-- Twitter / X -->
-          <a
-            href="https://twitter.com/prince_khunt_"
-            target="_blank"
-            rel="noopener"
-            class="social-btn"
-            aria-label="Twitter"
-          >
-            <span class="social-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                width="22"
-                height="22"
-              >
-                <path
-                  d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
-                />
-              </svg>
-            </span>
-            <span class="social-label">Twitter</span>
-          </a>
+    // ── ROTATING HERO BACKGROUND IMAGES ──
+    (function () {
+      const heroBg = document.querySelector('.hero-bg');
+      const backgrounds = [
+        'https://images.unsplash.com/photo-1594737625785-12c02c1f0c3b?auto=format&fit=crop&w=1600&q=80',
+        'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1600&q=80',
+        'https://images.unsplash.com/photo-1517964603305-4e0f62a9cc7f?auto=format&fit=crop&w=1600&q=80'
+      ];
+      let current = 0;
 
-          <!-- Gmail -->
-          <a
-            href="mailto:princekhunt04@gmail.com"
-            class="social-btn"
-            aria-label="Email"
-          >
-            <span class="social-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                width="22"
-                height="22"
-              >
-                <path
-                  d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.910 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"
-                />
-              </svg>
-            </span>
-            <span class="social-label">Gmail</span>
-          </a>
-        </div>
-      </div>
+      function rotateBackground() {
+        current = (current + 1) % backgrounds.length;
+        heroBg.style.opacity = '0';
+        setTimeout(() => {
+          heroBg.style.backgroundImage = `url('${backgrounds[current]}')`;
+          heroBg.style.opacity = '0.22';
+        }, 650);
+      }
 
-      <footer class="footer">
-        <span>© 2026 AI GYM Trainer — Real-time AI Gym Trainer</span>
-      </footer>
-    </section>
-  </body>
+      if (heroBg) {
+        setInterval(rotateBackground, 12000);
+      }
+    })();
+
+    // ── ANIMATED METRIC COUNTERS ──
+    function animateCounter(el, target, duration) {
+      const start = performance.now();
+      function tick(now) {
+        const t = Math.min((now - start) / duration, 1);
+        const ease = 1 - Math.pow(1 - t, 3);
+        el.textContent = Math.round(ease * target);
+        if (t < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    const counterObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.count-val').forEach(el => {
+            animateCounter(el, parseInt(el.dataset.target), 1800);
+          });
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.4 });
+
+    const metricsStrip = document.querySelector('.metrics-strip');
+    if (metricsStrip) counterObserver.observe(metricsStrip);
+
+    // ── SCROLL REVEAL ──
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    // ── 3D CARD TILT ──
+    document.querySelectorAll('.img-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transition = 'none';
+        card.style.transform = `perspective(700px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg) scale(1.03)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.transition = 'transform 0.6s cubic-bezier(0.34,1.56,0.64,1)';
+        card.style.transform = '';
+      });
+    });
+
+    // ── STICKY NAV: add glass on scroll ──
+    const nav = document.querySelector('.nav');
+    window.addEventListener('scroll', () => {
+      nav.style.boxShadow = window.scrollY > 50
+        ? '0 4px 30px rgba(0,0,0,0.4)'
+        : 'none';
+    }, { passive: true });
+  </script>
+</body>
+
 </html>
