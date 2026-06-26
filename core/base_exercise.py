@@ -23,7 +23,7 @@ class BaseExercise(ABC):
         return math.degrees(math.acos(cos_angle))
     
 
-    def get_points(self,landmarks,idx):
+    def get_point(self,landmarks,idx):
         p=landmarks[idx]
 
         return (p.x,p.y)
