@@ -384,7 +384,7 @@ def main():
                     .configure_view(strokeWidth=0)
                     .configure_axis(gridColor="rgba(255,255,255,0.05)", domainColor="rgba(255,255,255,0.1)")
                 )
-                st.altair_chart(chart_volume, use_container_width=True)
+                st.altair_chart(chart_volume, width='stretch')
 
             with tab2:
                 weekly_df = df.groupby("Week").agg({"Sets": "sum"}).reset_index()
@@ -400,7 +400,7 @@ def main():
                     .configure_view(strokeWidth=0)
                     .configure_axis(gridColor="rgba(255,255,255,0.05)", domainColor="rgba(255,255,255,0.1)")
                 )
-                st.altair_chart(chart_trend, use_container_width=True)
+                st.altair_chart(chart_trend, width='stretch')
 
             with tab3:
                 mix_df = df.groupby("Exercise").agg({"Sets": "sum"}).reset_index()
@@ -419,7 +419,7 @@ def main():
                     .properties(background=CHART_BG, height=280)
                     .configure_view(strokeWidth=0)
                 )
-                st.altair_chart(chart_donut, use_container_width=True)
+                st.altair_chart(chart_donut, width='stretch')
 
         else:
             st.info("Complete your first workout to see training charts here.")
