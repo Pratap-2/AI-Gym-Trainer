@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import time
+import requests
 import pandas as pd
 import altair as alt
 from services.auth.login_wall import render_login_wall
@@ -18,6 +19,21 @@ from services.coaching.tts import TextToSpeech
 from services.coaching.voice_pipeline import VoicePipeline, autoplay_audio
 
   
+def _get_ice_servers():
+    try:
+        api_key = st.secrets.get("METERED_API_KEY", "")
+        if api_key:
+            resp = requests.get(
+                f"https://relay.metered.ca/api/v1/turn/credentials?apiKey={api_key}",
+                timeout=5,
+            )
+            if resp.status_code == 200:
+                return resp.json()
+    except Exception:
+        pass
+    return [{"urls": ["stun:stun.l.google.com:19302"]}]
+
+
 def main():
     st.set_page_config(
         page_icon="🏋️‍♀️",
@@ -292,42 +308,9 @@ def main():
             unsafe_allow_html=True,
         )
     else:
-        turn_username = ""
-        turn_credential = ""
-        try:
-            turn_username = st.secrets.get("TURN_USERNAME", "")
-            turn_credential = st.secrets.get("TURN_CREDENTIAL", "")
-        except Exception:
-            pass
-
-        if turn_username and turn_credential:
-            ice_servers = [
-                {"urls": ["stun:stun.l.google.com:19302"]},
-                {
-                    "urls": "turn:relay.metered.ca:80",
-                    "username": turn_username,
-                    "credential": turn_credential,
-                },
-                {
-                    "urls": "turn:relay.metered.ca:443",
-                    "username": turn_username,
-                    "credential": turn_credential,
-                },
-                {
-                    "urls": "turn:relay.metered.ca:443?transport=tcp",
-                    "username": turn_username,
-                    "credential": turn_credential,
-                },
-                {
-                    "urls": "turns:relay.metered.ca:443",
-                    "username": turn_username,
-                    "credential": turn_credential,
-                },
-            ]
-        else:
-            ice_servers = [
-                {"urls": ["stun:stun.l.google.com:19302"]},
-            ]
+        if "ice_servers" not in st.session_state:
+            st.session_state.ice_servers = _get_ice_servers()
+        ice_servers = st.session_state.ice_servers
 
         context = webrtc_streamer(
             key="exercise-analysis",
