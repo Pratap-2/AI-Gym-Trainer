@@ -85,7 +85,7 @@ def add_exercise(user_id,exercise_name,reps,sets,time):
                 VALUES (?,?,?,?,?)
             """,(user_id,exercise_name,sets,reps,time))
 
-def get_users_exercise(user_id):
+def get_users_exercises(user_id):
     conn=_get_db_connection()
 
     return conn.execute("""

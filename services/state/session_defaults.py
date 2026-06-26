@@ -4,18 +4,16 @@ import streamlit as st
 def initial_session_defaults():
     defaults = {
         "reps": 0,
+        "target_sets": 0,
+        "reps_per_set": 0,
         "sets_completed": 0,
         "current_set_reps": 0,
         "workout_complete": False,
         "last_notified_sets_completed": 0,
-        "last_notified_workout_complete": False, 
+        "last_notified_workout_complete": False,
         "last_saved_sets_completed": 0,
         "set_cycle_started_at": 0.0,
         "last_exercise_type": "Squats",
-
-        # User session
-        "user_idx": None,
-        "username": "",
 
         # Workout plan (set before starting)
         "workout_started": False,
